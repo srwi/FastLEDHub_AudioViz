@@ -1,20 +1,7 @@
 #include <CLI/CLI.hpp>
-#include <iostream>
-#include <vector>
-#include <chrono>
-#include <cmath>
 #include <ftxui/dom/elements.hpp>
-#include <ftxui/screen/screen.hpp>
-#include <functional>
 #include <iostream>
-#include <memory>
-#include <string>
-#include <thread>
 #include <vector>
-#include <math.h>
-
-#include "ftxui/dom/node.hpp"
-#include "ftxui/screen/color.hpp"
 
 #include "networking.h"
 #include "audio.h"
@@ -23,7 +10,7 @@
 NetworkingController networking;
 AudioController audioController;
 
-std::vector<int> triangle(int width, int height)
+std::vector<int> spectrum_graph(int width, int height)
 {
     const int bar_width = width / SPECTRUM_LINES;
     std::vector<int> output(width);
@@ -47,25 +34,18 @@ void audioCallback(std::vector<uint8_t> data)
 
 int main(int argc, char** argv)
 {
-
-    CLI::App app("FastLEDHubSpectrum");
+    CLI::App app("FastLEDHub-Audio");
 
     app.set_help_flag();
     auto help = app.add_flag("-h,--help", "Print help");
-
     auto visualize = app.add_flag("-v,--visualize", "Visualize spectrum in terminal");
-
+    auto microphone = app.add_flag("-m,--microphone", "Use microphone to capture audio (default: system audio)");
     std::vector<std::string> uris;
     app.add_option("-u,--uris", uris, "Websocket URIs")->check(CLI::ValidIPV4);
-
     float beta{ 0 };
     app.add_option("-b,--beta", beta, "Low pass filter beta coefficient")->check(CLI::Range(0., 1.));
-
     float interval{ 0 };
     app.add_option("-i,--interval", interval, "Websocket send interval")->check(CLI::PositiveNumber);
-
-    int device{ 0 };
-    app.add_option("-d,--device", device, "Audio device index")->check(CLI::Number);
 
     try
     {
@@ -86,7 +66,9 @@ int main(int argc, char** argv)
         networking.addConnection(address);
     }
 
-    audioController.begin(device, beta, interval, audioCallback);
+    int device = *microphone ? -2 : -3;
+    if (!audioController.begin(device, beta, interval, audioCallback))
+        return 1;
 
     if (*visualize)
     {
@@ -95,23 +77,24 @@ int main(int argc, char** argv)
 
         std::string reset_position;
 
-        for (;;) {
+        for (;;)
+        {
             auto screen = Screen::Create(Dimension::Full());
 
             int width = screen.dimx() - screen.dimx() % SPECTRUM_LINES;
-            auto document = graph(std::ref(triangle)) | size(WIDTH, EQUAL, width) | border | hcenter;
+            auto document = graph(std::ref(spectrum_graph)) | size(WIDTH, EQUAL, width) | border | hcenter;
 
             Render(screen, document);
             std::cout << reset_position;
             screen.Print();
             reset_position = screen.ResetPosition();
-            const auto sleep_time = 1.001s;
+            const auto sleep_time = 0.016s;
             std::this_thread::sleep_for(sleep_time);
         }
     }
     else
     {
-        while (1);
+        std::cin.get();
     }
 
     return 0;

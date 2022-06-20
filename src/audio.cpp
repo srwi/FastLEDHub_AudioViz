@@ -6,7 +6,7 @@ AudioController::~AudioController()
 	BASS_WASAPI_Stop(true);
 }
 
-void AudioController::begin(int device, float beta, float interval, std::function<void(const std::vector<uint8_t>)> callback)
+bool AudioController::begin(int device, float beta, float interval, std::function<void(const std::vector<uint8_t>)> callback)
 {
 	m_device = device;
 	m_beta = beta;
@@ -17,28 +17,21 @@ void AudioController::begin(int device, float beta, float interval, std::functio
 
 	if (!BASS_Init(0, SAMPLE_RATE, NULL, 0, NULL))
 	{
-		throw std::runtime_error("Initializing 'no sound' device failed with error code: " + BASS_ErrorGetCode());  // TODO: raise errors correctly
+		std::cout << "Initializing 'no sound' device failed with error code: " + BASS_ErrorGetCode() << std::endl;
+		return false;
 	}
 	if (!BASS_WASAPI_Init(m_device, SAMPLE_RATE, 2, (BASS_WASAPI_BUFFER | BASS_WASAPI_AUTOFORMAT), 0.5, m_interval, tick, this))
 	{
 		std::cout << "Initializing audio device failed with error code: " << BASS_ErrorGetCode() << std::endl;
+		return false;
 	}
 	if (!BASS_WASAPI_Start())
 	{
 		std::cout << "Starting Bass WASAPI failed with error code: " << BASS_ErrorGetCode() << std::endl;
+		return false;
 	}
-}
 
-void AudioController::listDevices()
-{
-	BASS_WASAPI_DEVICEINFO device;
-	for (int i = 0; BASS_WASAPI_GetDeviceInfo(i, &device); i++)
-	{
-		if (device.flags & BASS_DEVICE_INPUT && device.flags & BASS_DEVICE_ENABLED)
-		{
-			// TODO
-		}
-	}
+	return true;
 }
 
 float* AudioController::getSpectrum()
