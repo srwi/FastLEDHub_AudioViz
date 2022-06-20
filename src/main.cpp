@@ -18,7 +18,7 @@ std::vector<int> spectrum_graph(int width, int height)
     {
         for (int i = 0; i < bar_width; ++i)
         {
-            output[bar * bar_width + i] = audioController.getSpectrum()[bar] / 255 * height;
+            output[bar * bar_width + i] = audioController.getSpectrum()[bar] * height;
         }
     }
     return output;
@@ -36,38 +36,25 @@ int main(int argc, char** argv)
 {
     CLI::App app("FastLEDHub-Audio");
 
-    app.set_help_flag();
-    auto help = app.add_flag("-h,--help", "Print help");
     auto visualize = app.add_flag("-v,--visualize", "Visualize spectrum in terminal");
     auto microphone = app.add_flag("-m,--microphone", "Use microphone to capture audio (default: system audio)");
-    std::vector<std::string> uris;
-    app.add_option("-u,--uris", uris, "Websocket URIs")->check(CLI::ValidIPV4);
-    float beta{ 0 };
-    app.add_option("-b,--beta", beta, "Low pass filter beta coefficient")->check(CLI::Range(0., 1.));
-    float interval{ 0 };
-    app.add_option("-i,--interval", interval, "Websocket send interval")->check(CLI::PositiveNumber);
+    std::vector<std::string> ips;
+    app.add_option("devices", ips, "List of target ip addresses")->check(CLI::ValidIPV4)->required();
+    float period = 10;
+    app.add_option("-p,--period", period, "Data transmission period (default: 10 [ms])")->check(CLI::PositiveNumber);
+    float beta = 0.25;
+    app.add_option("-b,--beta", beta, "Low pass filter beta coefficient (default: 0.25)")->check(CLI::Range(0., 1.));
 
-    try
-    {
-        app.parse(argc, argv);
-        if (*help)
-        {
-            throw CLI::CallForHelp();
-        }
-    }
-    catch (const CLI::Error& e)
-    {
-        return app.exit(e);
-    }
+    CLI11_PARSE(app, argc, argv);
 
-    for (std::string uri : uris)
+    for (std::string ip : ips)
     {
-        std::string address = "ws://" + uri + ":81";
-        networking.addConnection(address);
+        std::string uri = "ws://" + ip + ":81";
+        networking.addConnection(uri);
     }
 
     int device = *microphone ? -2 : -3;
-    if (!audioController.begin(device, beta, interval, audioCallback))
+    if (!audioController.begin(device, beta, period, audioCallback))
         return 1;
 
     if (*visualize)
@@ -88,7 +75,7 @@ int main(int argc, char** argv)
             std::cout << reset_position;
             screen.Print();
             reset_position = screen.ResetPosition();
-            const auto sleep_time = 0.016s;
+            const auto sleep_time = 0.017s;
             std::this_thread::sleep_for(sleep_time);
         }
     }

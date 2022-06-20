@@ -18,7 +18,7 @@ class AudioController
 {
 public:
 	~AudioController();
-	bool begin(int device, float beta, float interval, std::function<void(const std::vector<uint8_t>)> callback);
+	bool begin(int device, float beta, int period, std::function<void(const std::vector<uint8_t>)> callback);
 	float* getSpectrum();
 
 private:
@@ -26,7 +26,7 @@ private:
 
 	float m_spectrum[SPECTRUM_LINES];
 	float m_beta;
-	float m_interval;
+	float m_period;
 	int m_device;
 	std::function<void(const std::vector<uint8_t>)> m_callback;
 };

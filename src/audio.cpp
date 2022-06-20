@@ -6,11 +6,11 @@ AudioController::~AudioController()
 	BASS_WASAPI_Stop(true);
 }
 
-bool AudioController::begin(int device, float beta, float interval, std::function<void(const std::vector<uint8_t>)> callback)
+bool AudioController::begin(int device, float beta, int period, std::function<void(const std::vector<uint8_t>)> callback)
 {
 	m_device = device;
 	m_beta = beta;
-	m_interval = interval;
+	m_period = period;
 	m_callback = callback;
 
 	memset(m_spectrum, 0, sizeof(m_spectrum));
@@ -20,7 +20,7 @@ bool AudioController::begin(int device, float beta, float interval, std::functio
 		std::cout << "Initializing 'no sound' device failed with error code: " + BASS_ErrorGetCode() << std::endl;
 		return false;
 	}
-	if (!BASS_WASAPI_Init(m_device, SAMPLE_RATE, 2, (BASS_WASAPI_BUFFER | BASS_WASAPI_AUTOFORMAT), 0.5, m_interval, tick, this))
+	if (!BASS_WASAPI_Init(m_device, SAMPLE_RATE, 2, (BASS_WASAPI_BUFFER | BASS_WASAPI_AUTOFORMAT), 0.5, m_period / 1000., tick, this))
 	{
 		std::cout << "Initializing audio device failed with error code: " << BASS_ErrorGetCode() << std::endl;
 		return false;
@@ -60,8 +60,8 @@ DWORD CALLBACK AudioController::tick(void* buffer, DWORD length, void* user)
 			}
 		}
 
-		int y = sqrt(binPeak) * 255.0;
-		if (y > 255) y = 255;
+		float y = sqrt(binPeak);
+		if (y > 1) y = 1;
 		if (y < 0) y = 0;
 
 		// Low pass filter
@@ -71,7 +71,7 @@ DWORD CALLBACK AudioController::tick(void* buffer, DWORD length, void* user)
 	std::vector<uint8_t> bytes(SPECTRUM_LINES);
 	for (int i = 0; i < SPECTRUM_LINES; ++i)
 	{
-		bytes[i] = (unsigned char)(this_->m_spectrum[i]);
+		bytes[i] = (uint8_t)(this_->m_spectrum[i] * 255.);
 	}
 	this_->m_callback(bytes);
 
