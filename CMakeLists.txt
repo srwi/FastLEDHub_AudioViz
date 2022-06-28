@@ -36,4 +36,4 @@ target_link_libraries(FastLEDHubAudioViz ixwebsocket::ixwebsocket)
 find_package(CLI11 CONFIG REQUIRED)
 target_link_libraries(FastLEDHubAudioViz CLI11::CLI11)
 
-add_custom_command(TARGET FastLEDHubAudioViz POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/dll" $<TARGET_FILE_DIR:FastLEDHubAudioViz>)
+add_custom_command(TARGET FastLEDHubAudioViz POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/lib/dll" $<TARGET_FILE_DIR:FastLEDHubAudioViz>)
