@@ -4,7 +4,7 @@ if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "")
 endif()
 
-project(FastLEDHubSpectrum)
+project(FastLEDHubAudioViz)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -19,19 +19,21 @@ file(GLOB SOURCES
     "${PROJECT_SOURCE_DIR}/src/*.cpp"
     "${PROJECT_SOURCE_DIR}/src/*.h"
 )
-add_executable(FastLEDHubSpectrum ${SOURCES})
+add_executable(FastLEDHubAudioViz ${SOURCES})
 
 # BASS
-target_link_libraries(FastLEDHubSpectrum bass basswasapi)
+target_link_libraries(FastLEDHubAudioViz bass basswasapi)
 
 # FTXUI
 find_package(ftxui CONFIG REQUIRED)
-target_link_libraries(FastLEDHubSpectrum ftxui::dom ftxui::screen ftxui::component)
+target_link_libraries(FastLEDHubAudioViz ftxui::dom ftxui::screen ftxui::component)
 
 # IXWebsocket
 find_package(ixwebsocket CONFIG REQUIRED)
-target_link_libraries(FastLEDHubSpectrum ixwebsocket::ixwebsocket)
+target_link_libraries(FastLEDHubAudioViz ixwebsocket::ixwebsocket)
 
 # CLI11
 find_package(CLI11 CONFIG REQUIRED)
-target_link_libraries(FastLEDHubSpectrum CLI11::CLI11)
+target_link_libraries(FastLEDHubAudioViz CLI11::CLI11)
+
+add_custom_command(TARGET FastLEDHubAudioViz POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory "${PROJECT_SOURCE_DIR}/dll" $<TARGET_FILE_DIR:FastLEDHubAudioViz>)
