@@ -34,7 +34,7 @@ void audioCallback(std::vector<uint8_t> data)
 
 int main(int argc, char** argv)
 {
-    CLI::App app("FastLEDHub-Audio");
+    CLI::App app("FastLEDHub-AudioViz");
 
     auto visualize = app.add_flag("-v,--visualize", "Visualize spectrum in terminal");
     auto microphone = app.add_flag("-m,--microphone", "Use microphone to capture audio (default: system audio)");
