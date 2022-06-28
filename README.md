@@ -2,7 +2,7 @@
 
 [![MIT license](https://img.shields.io/github/license/stnkl/FastLEDHub_AudioViz)](https://github.com/stnkl/FastLEDHub_AudioViz/blob/master/LICENSE)
 
-FastLEDHub-AudioViz is a command line tool that can be used to send spectrum data from a Windows audio device to an ESP32 or ESP8266 running FastLEDHub. The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. It can send data to multiple devices via a websocket connection.
+FastLEDHub-AudioViz is a command line tool that can be used to send spectrum data from a Windows audio device to an ESP32 or ESP8266 running [FastLEDHub](https://github.com/stnkl/FastLEDHub). The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. It can send data to multiple devices via a websocket connection. More information can be found in the [FastLEDHub](https://github.com/stnkl/FastLEDHub) documentation.
 
 ## Example usage
 
