@@ -35,3 +35,27 @@ Options:
   -p,--period FLOAT:POSITIVE        Data transmission period (default: 10 [ms])
   -b,--beta FLOAT:FLOAT in [0 - 1]  Low pass filter beta coefficient (default: 0.25)
 ```
+
+## Build
+
+Currently only Windows x64 is supported:
+
+### Requirements
+
+- Visual Studio
+- [VCPKG](https://vcpkg.io/en/getting-started.html)
+- [CMake](https://cmake.org/) ≥ 3.20
+
+### Building
+
+1. Define the root directory of VCPKG as environmental variable `VCPKG_ROOT`.
+2. Install required packages
+
+      `vcpkg install cli11:x64-windows ixwebsocket:x64-windows ftxui:x64-windows`
+3. Clone repository
+
+      `git clone https://github.com/stnkl/FastLEDHub_AudioViz.git`
+4. Generate build files
+
+      `cmake FastLEDHub_AudioViz`
+5. Build using Visual Studio
