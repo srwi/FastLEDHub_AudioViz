@@ -2,8 +2,8 @@
     "name": "main",
     "version-string": "latest",
     "dependencies": [
-      "cli11:x64-windows",
-      "ixwebsocket:x64-windows",
-      "ftxui:x64-windows"
+      "cli11",
+      "ixwebsocket",
+      "ftxui"
     ]
   }
