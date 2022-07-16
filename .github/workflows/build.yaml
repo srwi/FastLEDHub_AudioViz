@@ -1,0 +1,19 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [windows-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Run vcpkg
+      uses: lukka/run-vcpkg@v4
+      with:
+        vcpkgArguments: 'cli11:x64-windows ixwebsocket:x64-windows ftxui:x64-windows'
+        vcpkgDirectory: '${{ github.workspace }}/vcpkg'
