@@ -1,9 +1,9 @@
 # FastLEDHub-AudioViz
 
-![Build](https://github.com/stnkl/FastLEDHub_AudioViz/actions/workflows/build.yml/badge.svg)
-[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/stnkl/FastLEDHub_AudioViz/blob/master/LICENSE)
+![Build](https://github.com/srwi/FastLEDHub_AudioViz/actions/workflows/build.yml/badge.svg)
+[![MIT license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/srwi/FastLEDHub_AudioViz/blob/master/LICENSE)
 
-FastLEDHub-AudioViz is a command line tool that can be used to send spectrum data from a Windows audio device to an ESP32 or ESP8266 running [FastLEDHub](https://github.com/stnkl/FastLEDHub). The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. It can send data to multiple devices via a websocket connection. More information can be found in the [FastLEDHub](https://github.com/stnkl/FastLEDHub) documentation.
+FastLEDHub-AudioViz is a command line tool that can be used to send spectrum data from a Windows audio device to an ESP32 or ESP8266 running [FastLEDHub](https://github.com/srwi/FastLEDHub). The transmitted data consists of 16 bins corresponding to different frequency ranges in the audio spectrum. It can send data to multiple devices via a websocket connection. More information can be found in the [FastLEDHub](https://github.com/srwi/FastLEDHub) documentation.
 
 ## Example usage
 
@@ -55,7 +55,7 @@ Currently only Windows x64 is supported:
       `vcpkg install cli11:x64-windows ixwebsocket:x64-windows ftxui:x64-windows`
 3. Clone repository
 
-      `git clone https://github.com/stnkl/FastLEDHub_AudioViz.git`
+      `git clone https://github.com/srwi/FastLEDHub_AudioViz.git`
 4. Generate build files
 
       `cmake FastLEDHub_AudioViz`
